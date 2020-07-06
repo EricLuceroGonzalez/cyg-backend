@@ -8,7 +8,8 @@ app.use(cors());
 // check computer environment port number
 const port = process.env.PORT || 3001;
 
-// // Require artist schema file to save it:
+const HttpError = require("../models/http-errors");
+// Require artist schema file to save it:
 const aComment = require("../models/CommentSchema");
 const newForm = require("../models/PreFormSchema");
 const Coupon = require("../models/CouponSchema");
@@ -24,6 +25,20 @@ const passport = require("passport");
 
 // Add the users (routes)
 // const users = require("../routes/api/users");
+
+
+// CORS error: set the headers to prevent (Middleware):
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  // ---> Continue flow to other middewares
+  next();
+});
+
 
 // Add the routes
 const routes = require("../routes/theroutes");
@@ -45,69 +60,28 @@ app.use(passport.initialize());
 // Passport config
 require("../config/passport")(passport);
 require("../config/reviewPassport")(passport);
+
+// Error handler when no endpoint or direction is found "NEXT()""
+app.use((req, res, next) => {
+  const error = new HttpError("Could not find this route.", 404);
+  throw error;
+});
+// Error Middleware
+// Special middleware function - Express knows is Error Handling (4 parameters)
+app.use((error, req, res, next) => {
+  // Find the file on the request and ERROR ---> Not save
+  if (req.file) {
+    fs.unlink(req.file.path, (err) => {
+      console.log(`The error on file: ${err}`);
+    });
+  }
+  if (res.headerSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || "An unknown error ocurred" });
+});
 // Routes
 // app.use("/api/users", users);
 
-// When some one calls .get() we catch the request data and send a response data
-
-app.get("/", (req, res) => {
-  res.send("Hello World!!!");
-});
-
-// app.post("/api/createCoupon/add", (req, res) => {
-//   console.log("\n\n\n-----------------------------");
-//   console.log(req.body);
-//   console.log("\n--------- user --------------------");
-//   console.log(req.body.user);
-//   console.log("\n--------- body -------------------");
-//   console.log(req.body.content);
-
-//   // console.log(`\n\n user id: ${req.body.user.user.id}`);
-//   // user: req.body.user.user.id,
-//   const newCoupon = new Coupon(req.body);
-
-//   // try {
-//     console.log("\n try----------");
-
-//     const coupon = newCoupon.save();
-//     console.log("save----------");
-
-//     // const couponWithUser = Coupon.findById(coupon._id).populate("user");
-//     // "user": "5dff19587dc0994532c58759",
-
-//     console.log("save id  ----------");
-//     res.status(200).send({ message: "Ok", res: req.body });
-//   // } catch (err) {
-//   //   console.log("Errirrrr");
-//   //   res.status(400).send(err);
-//   // }
-// });
-
-// initi CRUD -------------
-// The CRUD things
-
-// app.get("/comments", (req, res) => {
-//   // find() all comments from db
-
-//   aComment
-//     .find()
-//     .then(newForm => res.status(200).send(newForm))
-//     .catch(err => res.status(400).send(err));
-// });
-
-// //  C: CREATE ------------
-// app.post("/api/v1/aComment", (req, res) => {
-//   // Recibir el comment
-//   console.log(req.body);
-
-//   // Guardar en db
-//   const newComment = new aComment(req.body);
-//   newComment.save((err, newComment) => {
-//     return err
-//       ? res.status(400).send({ mensaje: "Hay un error", res: err })
-//       : res.status(200).send({ mensaje: "Comment guardado", res: newComment });
-//   });
-// });
-
-// Send variable when this file is "require"
 module.exports = { app, port };
