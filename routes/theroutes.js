@@ -6,6 +6,7 @@ const fileUpload = require("../middleware/file-upload");
 // Auth-check Middleware
 const checkAuth = require("../middleware/check-auth");
 const ctrl = require("./theroute-control");
+const auth = require("./auth-control");
 const router = express.Router();
 
 // For user posting and requiesting
@@ -17,10 +18,8 @@ router.get("/coupons", ctrl.getAllCoupons);
 router.get("/getCoupon/:id", ctrl.getCouponById);
 router.get("/revAuth/:id", ctrl.getReviewerById);
 
-router.post("/users/register", ctrl.userRegister);
-router.post("/users/login", ctrl.userLogin);
-router.post("/user/register", ctrl.reviewUserRegister);
-router.post("/user/login", ctrl.reviewUserLogin);
+router.post("/users/register", auth.userRegister);
+router.post("/users/login", auth.userLogin);
 
 // **********************  MIDDLEWARE To ACCESS next requests  **********************
 router.use(checkAuth);
