@@ -41,3 +41,21 @@ Este repositorio contiene la lógica del **backend (servidor)** para la aplicaci
 
 ```bash
 [...Comando de ejecución, Ej: npm run dev, python app.py, java -jar app.jar...]
+```
+## 🤝 Contribución
+
+Aunque este es un repositorio de portfolio personal, si encuentras algún error (typo, problema de diseño, etc.), ¡siéntete libre de abrir un *Issue* o enviar un *Pull Request*!
+
+1.  Haz un `fork` del repositorio.
+2.  Crea una nueva rama (`git checkout -b feature/nueva-seccion`).
+3.  Realiza tus cambios y haz `commit` (`git commit -m 'feat: Añadir nueva sección de contacto'`).
+4.  Empuja tus cambios (`git push origin feature/nueva-seccion`).
+5.  Abre un `Pull Request`.
+
+## ✍️ Autor
+
+* **Eric Lucero González** - [GitHub](https://github.com/EricLuceroGonzalez)
+
+## 📄 Licencia
+
+Este proyecto se distribuye bajo la Licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
